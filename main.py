@@ -255,10 +255,30 @@ fig_q8 = px.histogram(
     nbins=30,
     title=question_8,
     labels={"first_show": "개봉일 상영횟수"},
+    marginal="box",
+    color_discrete_sequence=["#FF4B4B"],
 )
-fig_q8.update_layout(yaxis_title="영화 편수")
+fig_q8.update_layout(
+    yaxis_title="영화 편수",
+    bargap=0.05,
+    title_font_size=20,
+    plot_bgcolor="white",
+)
 fig_q8.update_traces(
-    hovertemplate="상영횟수 구간: %{x}<br>영화 편수: %{y}<extra></extra>"
+    hovertemplate="상영횟수 구간: %{x}<br>영화 편수: %{y}<extra></extra>",
+    marker_line_color="white",
+    marker_line_width=1,
+    selector=dict(type="histogram"),
+)
+
+mean_show = df["first_show"].mean()
+fig_q8.add_vline(
+    x=mean_show,
+    line_dash="dash",
+    line_color="#1F77B4",
+    line_width=2,
+    annotation_text=f"평균 {mean_show:,.0f}회",
+    annotation_position="top",
 )
 
 st.plotly_chart(fig_q8, use_container_width=True)
