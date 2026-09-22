@@ -238,9 +238,56 @@ st.text_area(
 st.divider()
 
 # -----------------------------------------------------------------------------
-# 8. 제작 국가별 영화 편수
+# 8. 나만의 질문 - 개봉일 상영횟수의 분포
 # -----------------------------------------------------------------------------
-st.header("8. 제작 국가별 영화 편수")
+st.header("8. 나만의 8번째 질문 — 만들어서 분석하기")
+
+question_8 = "개봉일 상영횟수는 대체로 어느 정도이고, 영화마다 얼마나 차이가 나는가?"
+
+st.markdown(
+    f"**질문**: {question_8}  \n"
+    "**꼴**: 값이 대개 얼마쯤이고 얼마나 퍼져 있나 → **분포** → 히스토그램"
+)
+
+fig_q8 = px.histogram(
+    df,
+    x="first_show",
+    nbins=30,
+    title=question_8,
+    labels={"first_show": "개봉일 상영횟수"},
+)
+fig_q8.update_layout(yaxis_title="영화 편수")
+fig_q8.update_traces(
+    hovertemplate="상영횟수 구간: %{x}<br>영화 편수: %{y}<extra></extra>"
+)
+
+st.plotly_chart(fig_q8, use_container_width=True)
+
+# 가장 영화가 많이 몰린 구간과 상영횟수가 가장 많은 영화 자동 안내
+show_bin = pd.cut(df["first_show"], bins=30, include_lowest=True)
+top_show_bin = show_bin.value_counts().idxmax()
+top_show_bin_count = show_bin.value_counts().max()
+top_show_movie = df.loc[df["first_show"].idxmax()]
+
+st.markdown(
+    f"- 개봉일 상영횟수가 가장 많이 몰린 구간은 **{int(top_show_bin.left):,}회 ~ {int(top_show_bin.right):,}회**"
+    f"이며, 이 구간에 **{top_show_bin_count}편**이 속해 있습니다.\n"
+    f"- 개봉일 상영횟수가 가장 많은 영화는 **{top_show_movie['movieNm']}**"
+    f"({int(top_show_movie['first_show']):,}회)입니다."
+)
+
+st.text_area(
+    "이 그래프로 알 수 있는 것",
+    placeholder="예: 대부분의 영화는 개봉일 상영횟수가 ○○회 이하에 몰려 있고, 일부만 매우 많이 상영된다.",
+    key="insight_q8",
+)
+
+st.divider()
+
+# -----------------------------------------------------------------------------
+# 9. 제작 국가별 영화 편수
+# -----------------------------------------------------------------------------
+st.header("9. 제작 국가별 영화 편수")
 
 nation_count = df["nation"].value_counts().reset_index()
 nation_count.columns = ["nation", "count"]
@@ -264,9 +311,9 @@ st.text_area(
 st.divider()
 
 # -----------------------------------------------------------------------------
-# 9. 10위권 유지 일수 분포
+# 10. 10위권 유지 일수 분포
 # -----------------------------------------------------------------------------
-st.header("9. 박스오피스 10위권 유지 일수 분포")
+st.header("10. 박스오피스 10위권 유지 일수 분포")
 
 fig6 = px.histogram(
     df,
