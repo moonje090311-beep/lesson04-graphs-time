@@ -156,9 +156,37 @@ st.text_area(
 st.divider()
 
 # -----------------------------------------------------------------------------
-# 5. 제작 국가별 영화 편수
+# 5. 장르별 총 관객수 분포 - 박스플롯 (영화 10편 이상인 장르만)
 # -----------------------------------------------------------------------------
-st.header("5. 제작 국가별 영화 편수")
+st.header("5. 장르별 총 관객수 분포 (영화 10편 이상 장르만)")
+
+genre_movie_count = df["genre"].value_counts()
+major_genres = genre_movie_count[genre_movie_count >= 10].index
+df_major_genre = df[df["genre"].isin(major_genres)]
+
+fig5 = px.box(
+    df_major_genre,
+    x="genre",
+    y="total_audi",
+    points="outliers",
+    hover_data={"movieNm": True, "genre": False, "total_audi": ":,"},
+    labels={"genre": "장르", "total_audi": "총 관객수(명)"},
+)
+
+st.plotly_chart(fig5, use_container_width=True)
+
+st.text_area(
+    "이 그래프로 알 수 있는 것",
+    placeholder="예: ○○ 장르는 관객수의 중앙값이 높고 편차도 큰 편이다.",
+    key="insight_5",
+)
+
+st.divider()
+
+# -----------------------------------------------------------------------------
+# 6. 제작 국가별 영화 편수
+# -----------------------------------------------------------------------------
+st.header("6. 제작 국가별 영화 편수")
 
 nation_count = df["nation"].value_counts().reset_index()
 nation_count.columns = ["nation", "count"]
@@ -177,28 +205,6 @@ st.text_area(
     "이 그래프로 알 수 있는 것",
     placeholder="예: ○○ 영화가 전체의 대부분을 차지하며, 그 다음으로 ○○이 많다.",
     key="insight_4",
-)
-
-st.divider()
-
-# -----------------------------------------------------------------------------
-# 6. 장르별 총 관객수 분포 - 박스플롯
-# -----------------------------------------------------------------------------
-st.header("6. 장르별 총 관객수 분포")
-
-fig5 = px.box(
-    df,
-    x="genre",
-    y="total_audi",
-    labels={"genre": "장르", "total_audi": "총 관객수(명)"},
-)
-
-st.plotly_chart(fig5, use_container_width=True)
-
-st.text_area(
-    "이 그래프로 알 수 있는 것",
-    placeholder="예: ○○ 장르는 관객수의 중앙값이 높고 편차도 큰 편이다.",
-    key="insight_5",
 )
 
 st.divider()
