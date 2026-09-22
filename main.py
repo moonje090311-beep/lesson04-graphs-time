@@ -108,6 +108,21 @@ fig2.update_layout(yaxis_title="영화 편수")
 
 st.plotly_chart(fig2, use_container_width=True)
 
+# 가장 영화가 많이 몰린 구간 계산
+audi_bin = pd.cut(df["total_audi"], bins=30, include_lowest=True)
+top_bin = audi_bin.value_counts().idxmax()
+top_bin_count = audi_bin.value_counts().max()
+
+# 총 관객수가 가장 많은 영화
+top_movie_row = df.loc[df["total_audi"].idxmax()]
+
+st.markdown(
+    f"- 영화가 가장 많이 몰린 총 관객수 구간은 **{int(top_bin.left):,}명 ~ {int(top_bin.right):,}명**"
+    f"이며, 이 구간에 **{top_bin_count}편**이 속해 있습니다.\n"
+    f"- 총 관객수가 가장 많은 영화는 **{top_movie_row['movieNm']}**"
+    f"(총 관객 {int(top_movie_row['total_audi']):,}명)입니다."
+)
+
 st.text_area(
     "이 그래프로 알 수 있는 것",
     placeholder="예: 대부분의 영화는 총 관객수가 ○○명 이하에 몰려 있고, 일부만 큰 흥행을 한다.",
